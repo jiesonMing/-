@@ -1,0 +1,797 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<style>
+    .chk_3{display: none;}
+    .chk_3 + label {background-color: #FFF;	border: 1px solid #C1CACA; font-weight:normal; width:18px;	height:18px; display:block;	border-radius: 3px;	position: relative;	font-size: 16px;}
+    .chk_3:checked + label {background-color: #92A1AC;	border: 1px solid #92A1AC;}
+    .chk_3:checked + label:after {content: '\2714'; line-height:14px; position: absolute; top: 0px;	left: 0px;	color: #FFF; width: 18px;  text-align: center;	font-size: 14px; padding: 2px 0 0 0;}
+    .chk_3 + label{margin-left:5px;}
+</style>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商品订单</h3>
+                <h5>商城实物商品交易订单查询及管理</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style=" width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+            <li>查看操作可以查看订单详情, 包括支付费用, 商品详情等</li>
+            <li>未支付的订单可以取消</li>
+            <li>用户收货后, 如果没有点击"确认收货",系统自动根据设置的时间跟商家结算.</li>
+        </ul>
+    </div>
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>订单列表</h3>
+                <h5>(共{$page->totalRows}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <form class="navbar-form form-inline"  method="post" action="{:U('Admin/order/export_order')}"  name="search-form2" id="search-form2">
+                <input type="hidden" name="order_by" value="order_id">
+                <input type="hidden" name="sort" value="desc">
+                <input type="hidden" name="user_id" value="{$Request.param.user_id}">
+                <!--用于查看结算统计 包含了哪些订单-->
+                <input type="hidden" value="{$_GET['order_statis_id']}" name="order_statis_id" />
+
+                <div class="sDiv q_nowrap">
+                    <div class="sDiv2">
+                        <input type="text" size="30" id="add_time_begin" name="add_time_begin" value="" class="qsbox"  placeholder="下单开始时间">
+                    </div>
+                    <div class="sDiv2">
+                        <input type="text" size="30" id="add_time_end" name="add_time_end" value="" class="qsbox"  placeholder="下单结束时间">
+                    </div>
+                    <div class="sDiv2">
+                        <select name="pay_status" class="select" style="width:100px;margin-right:5px;margin-left:5px">
+                            <option value="">支付状态</option>
+                            <option value="0">未支付</option>
+                            <option value="1">已支付</option>
+                            <option value="2">支付中</option>
+                            <option value="3">支付失败</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="pay_code" class="select" style="width:100px;margin-right:5px;margin-left:5px">
+                            <option value="">支付方式</option>
+                            <option value="thirdsCanPay">易极付微信接口</option>
+                            <option value="onlineBank">易极付网银支付</option>
+                            <option value="quickPay">易极付快捷支付</option>
+                            <option value="quickPay">易极付mobile微信支付</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="shipping_status" class="select" style="width:100px;">
+                            <option value="">发货状态</option>
+                            <option value="0">未发货</option>
+                            <option value="1">已发货</option>
+                            <option value="2">部分发货</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select name="order_status" class="select" style="width:100px;">
+                            <option value="">订单状态</option>
+                            <volist name="order_status" id="v" key="k">
+                                <option value="{$k-1}">{$v}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <select  name="keytype" class="select">
+                            <option value="">条件选择</option>
+                            <option value="consignee">收货人</option>
+                            <option value="nickname">下单人</option>
+                            <option value="order_sn" selected="selected">订单编号</option>
+                        </select>
+                    </div>
+                    <div class="sDiv2">
+                        <input type="text" size="30" name="keywords" class="qsbox" placeholder="搜索相关数据...">
+                    </div>
+                    <div class="sDiv2">
+                        <input type="button" onclick="ajax_get_table('search-form2',1,0,'{$status}')"  class="btn" value="搜索">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tDiv">
+            <div class="tDiv2 q_nowrap">
+                <!-- <div class="fbutton">
+                    <a href="javascript:exportCheck()">
+                        <div class="add" title="导出excel文件,导出所选择的数据">
+                            <span><i class="fa fa-plus"></i>导出选中</span>
+                        </div>
+                    </a>
+                </div> -->
+                <!-- <div class="fbutton">
+                    <a href="javascript:exportReport()">
+                        <div class="add" title="导出excel文件,导出所选择过筛选条件的数据">
+                            <span><i class="fa fa-plus"></i>导出数据</span>
+                        </div>
+                    </a>
+                </div>
+-->
+                <div class="fbutton">
+                    <a href="javascript:delSome();">
+                        <div class="add" title="一键删除">
+                            <span><i class="fa fa-close"></i>一键删除</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:rePayOrder(1);">
+                        <div class="add" title="重新上传支付单">
+                            <span><i class="fa fa-undo"></i>重新上传支付单</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:payOrderSuc();">
+                        <div class="add" title="设置支付单成功">
+                            <span><i class="fa fa-check"></i>设置支付单成功</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:reCusOrder();">
+                        <div class="add" title="重新申报海关订单">
+                            <span><i class="fa fa-undo"></i>重新申报海关订单</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:cusOrderSuc();">
+                        <div class="add" title="设置海关订单成功">
+                            <span><i class="fa fa-check"></i>设置海关订单成功</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:reCiqOrder();">
+                        <div class="add" title="重新申报国检订单">
+                            <span><i class="fa fa-undo"></i>重新申报国检订单</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:ciqOrderSuc();">
+                        <div class="add" title="设置国检订单成功">
+                            <span><i class="fa fa-check"></i>设置国检订单成功</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:syncOrder();">
+                        <div class="add" title="重新同步订单">
+                            <span><i class="fa fa-check"></i>重新同步订单</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:syncLogisticCode();">
+                        <div class="add" title="一键同步快递单号">
+                            <span><i class="fa fa-check"></i>一键同步快递单号</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="fbutton">
+                    <a href="javascript:resetGNum();">
+                        <div class="add" title="重置商品项号">
+                            <span><i class="fa fa-check"></i>重置商品项号</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!--div class="fbutton">
+                    <a href="javascript:rePayOrder(2);">
+                        <div class="add" title="重新上传支付单">
+                            <span><i class="fa fa-undo"></i>重新上传支付单</span>
+                        </div>
+                    </a>
+                </div-->
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div id="table"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#add_time_begin').layDate();
+        $('#add_time_end').layDate();
+        // 点击刷新数据
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+        ajax_get_table('search-form2',1,0,3);
+        $('.ico-check ' , '.hDivBox').click(function(){
+            $('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){
+                var hasClass = $(this).hasClass('trSelected');
+                $('tr' , '#flexigrid').each(function(){
+                    if(hasClass){
+                        $(this).addClass('trSelected');
+                    }else{
+                        $(this).removeClass('trSelected');
+                    }
+                });
+            });
+        });
+
+        parent.$("#bc1").html("({$num1})");
+        parent.$("#bc2").html("({$num2})");
+        parent.$("#bc3").html("({$num3})");
+        parent.$("#bc4").html("({$num4})");
+        parent.$("#bc5").html("({$num5})");
+        parent.$("#bc6").html("({$num6})");
+        parent.$("#bc7").html("({$num7})");
+
+    });
+    //ajax 抓取页面
+    function ajax_get_table(tab,page,type,status){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"/index.php/Admin/orderBC/ajaxindex/p/"+page+"/type/"+type+"/status/"+status,//+tab,
+            data : $('#'+tab).serialize(),// 你的formid
+            success: function(data){
+                $("#table").html('');
+                $("#table").append(data);
+                // 表格行点击选中切换
+                $('#flexigrid > table>tbody >tr').click(function(){
+                    $(this).toggleClass('trSelected');
+                });
+            }
+        });
+    }
+
+    // 点击排序
+    function sort(field){
+        $("input[name='order_by']").val(field);
+        var v = $("input[name='sort']").val() == 'desc' ? 'asc' : 'desc';
+        $("input[name='sort']").val(v);
+        ajax_get_table('search-form2',cur_page);
+    }
+    //重新排序
+    function oSort(type){
+        ajax_get_table('search-form2',cur_page,type,'{$status}');
+    }
+
+    function exportReport(){
+        $('#search-form2').submit();
+    }
+
+    //导出选中的数据
+    function exportCheck(){
+        var inp=$("tbody tr td").find("input");
+        var len=$("tbody tr td").find("input").length;
+        var str='';
+        for(var i=0;i<len;i++){
+            if(inp[i].checked){
+                str+=inp[i].value+',';
+            }
+        }
+        str=str.substring(str.length-1,",");
+        if(str){
+            var url = "/index.php/Admin/order/export_order/ids/"+str;
+            window.location.href=url;
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+    //批量支付
+    function payBatch(order_id){
+        if(order_id){
+            var url="/index.php/Admin/order/payBatch/orders/"+order_id;
+            layer.open({
+                type: 2,
+                title: '批量支付',
+                area: ['1550px', '650px'],
+                offset: '100px',
+                fixed: false, //不固定
+                maxmin: true,
+                content: url,
+                end: function(){
+                    location.reload();
+                },
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //重新上传支付单
+    function rePayOrder(type){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders){
+            var index=layer.confirm('确定重新上传所选订单的支付单吗？', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/rePayOrder",//+tab,
+                    data : {orders:orders,type:type},// 你的formid
+                    beforeSend:function(XMLHttpRequest){
+                        doing=layer.open({
+                            type:0,
+                            icon:0,
+                            title:'',
+                            content:'处理中，请勿操作...',
+                            end: function(){
+                                location.reload();
+                            }
+                        });
+                        layer.style(doing,{
+                            width:'400px',
+                            top:'200px'
+                        });
+                    },
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            var error=el.data.error;
+                            var success=el.data.success;
+                            var str='';
+                            if(success){
+                                str+='<p>成功退回：'+success+'条记录</p>';
+                            }
+                            if(error){
+                                $.each(error,function(index,value){
+                                    str+='<p>'+value['order_sn']+':'+value['info']+'</p>';
+                                });
+                            }
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:str,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //设置支付单状态为成功
+    function payOrderSuc(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders){
+            var index=layer.confirm('确定设置所选订单的支付单状态为成功吗？', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/payOrderSuc",//+tab,
+                    data : {orders:orders},// 你的formid
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'设置成功',
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //重新申报海关订单
+    function reCusOrder(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders){
+            var index=layer.confirm('确定重新申报海关订单吗？', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/reCusOrder",//+tab,
+                    data : {orders:orders},// 你的formid
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'设置成功',
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //设置海关订单状态为成功
+    function cusOrderSuc(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders){
+            var index=layer.confirm('确定设置所选订单的海关订单状态为成功吗？', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/cusOrderSuc",//+tab,
+                    data : {orders:orders},// 你的formid
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'设置成功',
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //重新申报国检订单
+    function reCiqOrder(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders){
+            var index=layer.confirm('确定重新申报国检订单吗？', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/reCiqOrder",//+tab,
+                    data : {orders:orders},// 你的formid
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'设置成功',
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //设置国检订单状态为成功
+    function ciqOrderSuc(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders){
+            var index=layer.confirm('确定设置所选订单的国检订单状态为成功吗？', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/ciqOrderSuc",//+tab,
+                    data : {orders:orders},// 你的formid
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'设置成功',
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //一键同步订单
+    function syncOrder(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders) {
+            $.ajax({
+                type: "POST",
+                url: "/index.php/Admin/order/syncOrder",//+tab,
+                data: {orders: orders},// 你的formid
+                success: function (data) {
+                    //console.log(data);return false;
+                    var el = eval('(' + data + ')');
+                    if (el.statusCode == 200) {
+                        var str = '<p>一键推送返回结果：</p>';
+                        var success = el.data.success;
+                        if (success) {
+                            str += '<p>成功推送' + success + '条订单</p>';
+                        }
+                        ;
+                        var error = el.data.error;
+                        if (error) {
+                            $.each(error, function (n, value) {
+                                if (value['retCode'] == 400) {
+                                    if (value['retMessage']) {
+                                        str += '<p>订单：' + value['orderSn'] + '推送失败，原因：' + value['retMessage'] + '</p>';
+                                        if (value['goods']) {
+                                            $.each(value['goods'], function (i, val) {
+                                                str += '<p>订单：' + value['orderSn'] + '推送失败，原因是商品：' + val['goodsCode'] + val['retMessage'] + '</p>';
+                                            });
+                                        }
+                                    }
+                                } else if (value['retCode'] == 300) {
+                                    if (value['retMessage']) {
+                                        str += '<p>订单：' + value['orderSn'] + '推送异常，原因：' + value['retMessage'] + '</p>';
+                                        if (value['goods']) {
+                                            $.each(value['goods'], function (i, val) {
+                                                str += '<p>订单：' + value['orderSn'] + '推送异常，原因是商品：' + val['goodsCode'] + val['retMessage'] + '</p>';
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        layer.open({
+                            type: 0,
+                            icon: '1',
+                            title: '成功提示信息：',
+                            content: str,
+                            end: function () {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        layer.open({
+                            type: 0,
+                            icon: '2',
+                            title: '错误提示信息：',
+                            content: el.retMessage,
+                            end: function () {
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            });
+        }else{
+            layer.alert('请选择订单！', {icon: 2});
+        }
+    }
+
+    //一键同步快递单号
+    function syncLogisticCode(){
+        $.ajax({
+            type : "POST",
+            url:"/index.php/Admin/order/syncLogisticCode",//+tab,
+            data : "",// 你的formid
+            success: function(data){
+                var el=eval('('+data+')');
+                // console.log(el);return false;
+
+                if(el.statusCode==200){
+                    var str='<p>一键同步返回结果：</p>';
+                    var success=el.data.success;
+                    if(success){
+                        str+='<p>成功同步'+success+'条订单</p>';
+                    };
+                    layer.open({
+                        type:0,
+                        icon:'1',
+                        title:'成功提示信息：',
+                        content:str,
+                        end: function(){
+                            location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:el.retMessage,
+                        end: function(){
+                            location.reload();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    //一键删除
+    function delSome(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders) {
+            var index=layer.confirm('您正在进行对所选订单进行删除！请谨慎操作！', {icon: 3, title:'提示'}, function(i){
+                $.ajax({
+                    type : "POST",
+                    url:"/index.php/Admin/order/delSome",//+tab,
+                    data : {orders:orders},
+                    success: function(data){
+                        var el=eval('('+data+')');
+                        layer.close(index);
+                        if(el.statusCode==200){
+                            layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'删除成功',
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }else{
+                            layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage,
+                                end: function(){
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.msg('还未选择订单！', {icon: 2});
+        }
+    }
+    function resetGNum(){
+        var orders='';
+        $("input[name='checkbox']:checked").each(function(){
+            orders+=','+$(this).val();
+        });
+        if(orders) {
+            $.ajax({
+                type : "POST",
+                url:"/index.php/Admin/Order/resetGNum",//+tab,
+                data : {orders:orders},
+                success: function(data){
+                    var el=eval('('+data+')');
+                    if(el.statusCode==200){
+                        layer.open({
+                            type:0,
+                            icon:'1',
+                            title:'成功提示信息：',
+                            content:'重置成功',
+                            end: function(){
+                                location.reload();
+                            }
+                        });
+                    }else{
+                        layer.open({
+                            type:0,
+                            icon:'2',
+                            title:'错误提示信息：',
+                            content:el.retMessage,
+                            end: function(){
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+            });
+        }else{
+            layer.msg('还未选择订单！', {icon: 2});
+        }
+    }
+</script>
+</body>
+</html>

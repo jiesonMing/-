@@ -1,0 +1,273 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>新增/编辑关区信息</h3>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>请务必正确填写关区信息</li>
+        </ul>
+    </div>
+    <!--表单数据-->
+    <div class="ncap-form-default tab_div_1">
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="name">关区名称</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.name}" id="name" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                    <span>*</span>
+                <label for="platId">选择平台</label>
+            </dt>
+            <dd class="opt">
+                <select class="" id="platId">
+                    <option value="0">请选择平台</option>
+                    <volist name="platforms" id="vo" key="k">
+                        <if condition="$data['platId'] eq $vo['id']">
+                            <option value="{$vo.id}" selected="selected">{$vo.name}</option>
+                        <else />
+                            <option value="{$vo.id}">{$vo.name}</option>
+                        </if>
+                    </volist>
+                </select>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                    <span>*</span>
+                <label for="settingId">选择配置</label>
+            </dt>
+            <dd class="opt">
+                <select class="" id="settingId">
+                    <option value="0">请选择配置</option>
+                    <volist name="settings" id="vo" key="k">
+                        <if condition="$data['settingId'] eq $vo['id']">
+                            <option value="{$vo.id}" selected="selected">{$vo.settingName}</option>
+                        <else />
+                            <option value="{$vo.id}">{$vo.settingName}</option>
+                        </if>
+                    </volist>
+                </select>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="name">订单海关组织编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusOrderCode}" id="cusOrderCode" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="name">订单国检组织编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqOrderCode}" id="ciqOrderCode" class="input-txt"/>
+            </dd>
+        </dl>
+        {$payOrderStr}
+        <style>
+            .payOrderCard>div{ display:flex;display: -webkit-flex;flex-direction:row;line-height:3;}
+            .payOrderCard>div>span{width:80px;text-align:right;display:inline-block;}
+            .payOrderCard>div>div{display:flex;display: -webkit-flex;flex-direction:row;flex-wrap:wrap;}
+            .payOrderCard>div>div>label{padding:0 5px;}
+        </style>
+        <dl class="row">
+            <dt class="tit">
+                <label for="interfaceUrl">接口同步url</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.interfaceUrl}" id="interfaceUrl" class="input-txt"/>
+            </dd>
+        </dl>
+    </div>
+    <div class="ncap-form-default">        
+        <div class="bot">            
+            <input type="hidden" name="id" value="{$apiInfo.id}">
+            <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green submit">提交</a>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function() {
+        var isClick = true;
+        $(".submit").click(function () {
+            if (isClick) {
+                isClick = false;
+                var name = $("#name").val();
+                if ($.trim(name) == '') {
+                    isClick = true;
+                    var index = layer.open({
+                        type: 0,
+                        icon: '2',
+                        title: '错误提示信息：',
+                        content: '关区名称不能为空'
+                    });
+                    layer.style(index, {
+                        width: '400px',
+                        top: '120px'
+                    });
+                    return false;
+                }
+                var interfaceUrl = $("#interfaceUrl").val();
+                var platId = $("#platId").val();
+                if (!$.isNumeric(platId) || platId <= 0) {
+                    isClick = true;
+                    var index = layer.open({
+                        type: 0,
+                        icon: '2',
+                        title: '错误提示信息：',
+                        content: '请选择平台'
+                    });
+                    layer.style(index, {
+                        width: '400px',
+                        top: '120px'
+                    });
+                    return false;
+                }
+                var settingId = $("#settingId").val();
+                if (!$.isNumeric(settingId) || settingId <= 0) {
+                    isClick = true;
+                    var index = layer.open({
+                        type: 0,
+                        icon: '2',
+                        title: '错误提示信息：',
+                        content: '请选择配置'
+                    });
+                    layer.style(index, {
+                        width: '400px',
+                        top: '120px'
+                    });
+                    return false;
+                }
+                var cusOrderCode = $("#cusOrderCode").val();
+                var ciqOrderCode = $("#ciqOrderCode").val();
+                if ($.trim(ciqOrderCode) == '') {
+                    isClick = true;
+                    var index = layer.open({
+                        type: 0,
+                        icon: '2',
+                        title: '错误提示信息：',
+                        content: '订单国检组织编码不能为空'
+                    });
+                    layer.style(index, {
+                        width: '400px',
+                        top: '120px'
+                    });
+                    return false;
+                }
+                var organiConf='';
+                $("input[type=radio]:checked").each(function(){
+                    var val=$(this).val();
+                    organiConf+=val+',';
+                });
+                if($.trim(organiConf) == ''){
+                    isClick = true;
+                    var index = layer.open({
+                        type: 0,
+                        icon: '2',
+                        title: '错误提示信息：',
+                        content: '请选择支付单组织编码'
+                    });
+                    layer.style(index, {
+                        width: '400px',
+                        top: '120px'
+                    });
+                    return false;
+                }
+                var id = "{$id}";
+                var postdata = {
+                    id: id,
+                    name: name,
+                    platId: platId,
+                    interfaceUrl: interfaceUrl,
+                    settingId: settingId,
+                    cusOrderCode: cusOrderCode,
+                    ciqOrderCode:ciqOrderCode,
+                    organiConf:organiConf
+                };
+                var url = "/Admin/Port/editPort";
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    dataType: 'json',
+                    data: postdata,
+                    success: function (el) {
+                        if (el.statusCode == 200) {
+                            var index = layer.open({
+                                type: 0,
+                                icon: '1',
+                                title: '成功提示信息：',
+                                content: '操作成功',
+                                end: function () {
+                                    location.reload();
+                                }
+                            });
+                            layer.style(index, {
+                                width: '400px',
+                                top: '120px'
+                            });
+                        } else {
+                            var index = layer.open({
+                                type: 0,
+                                icon: '2',
+                                title: '错误提示信息：',
+                                content: el.retMessage
+                            });
+                            layer.style(index, {
+                                width: '400px',
+                                top: '120px'
+                            });
+                            return false;
+                        }
+                    },
+                    error: function (el) {
+                        var index = layer.open({
+                            type: 0,
+                            icon: '2',
+                            title: '错误提示信息：',
+                            content: '操作失败，请刷新重试'
+                        });
+                        layer.style(index, {
+                            width: '400px',
+                            top: '120px'
+                        });
+                        return false;
+                    }
+                });
+            } else {
+                var index = layer.open({
+                    type: 0,
+                    icon: '2',
+                    title: '错误提示信息：',
+                    content: '提交中，请稍候。。。'
+                });
+                layer.style(index, {
+                    width: '400px',
+                    top: '120px'
+                });
+                return false;
+            }
+        });
+    })
+</script>
+</html>

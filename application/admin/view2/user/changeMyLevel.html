@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑会员等级名称-{$tpshop_config['shop_info_store_title']}</title>
+    <meta http-equiv="keywords" content="{$tpshop_config['shop_info_store_keyword']}" />
+    <meta name="description" content="{$tpshop_config['shop_info_store_desc']}" />
+    <link href="__PUBLIC__/static/css/main.css" rel="stylesheet" type="text/css">
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css">
+    <link href="__PUBLIC__/static/font/css/font-awesome.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script><!-- 弹窗js 参考文档 http://layer.layui.com/-->
+</head>
+<style type="text/css">
+    .box-ct p{margin:10px;}
+    .box-ct p span{width:100px;margin:10px 10px;display:inline-block;}
+    .box-ct p input{width:200px;}
+</style>
+<body>
+<div class="adderss-add">
+    <div class="ner-reac ol_box_4" style="visibility: visible; position: fixed; z-index: 500; width: 100%; height:100%">
+        <div class="box-ct">
+            <p>
+                <span>编辑会员等级名称</span>  
+            </p>
+            <p>
+                <span><b class="xh">*</b>会员等级名称：&nbsp;</span>  
+                <input class="wi60-BFB" name="role_name" type="text" value="{$list.role_name}" />
+            </p>
+            <p>
+                <span class="pa-50-0">&nbsp;</span>
+                <button type="submit" class="box-ok">提交</button>
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('.box-ok').click(function(){
+            var role_name=$("input[name=role_name]").val();
+            var id="{$role_id}";
+            if($.trim(role_name)==''){
+                var index=layer.open({
+                    type:0,
+                    icon:'2',
+                    title:'错误提示信息：',
+                    content:'会员等级名称不能为空'
+                });
+                layer.style(index,{
+                    width:'400px',
+                    top:'120px'
+                });
+                return false;
+            }
+            $.ajax({
+                type : 'POST',
+                url : "/Admin/User/changeMyLevel",
+                dataType : 'json',
+                data : {role_name:role_name,id:id},
+                success : function(el){
+                   // console.log(el);return false;
+                    if(el.statusCode==200){
+                        var index=layer.open({
+                            type:0,
+                            icon:'1',
+                            title:'成功提示信息：',
+                            content:'修改会员等级名称成功',
+                            end: function(){
+                               location.reload();
+                            }
+                        });
+                        layer.style(index,{
+                            width:'400px',
+                            top:'120px'
+                        });
+                    }else{
+                        var index=layer.open({
+                            type:0,
+                            icon:'2',
+                            title:'错误提示信息：',
+                            content:el.retMessage
+                        });
+                        layer.style(index,{
+                            width:'400px',
+                            top:'120px'
+                        });
+                    }
+                },
+                error: function(el){
+                   var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'网络错误，请刷新重试',
+                        end: function(){
+                           location.reload();
+                        }
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

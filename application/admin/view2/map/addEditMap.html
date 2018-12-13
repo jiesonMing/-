@@ -1,0 +1,115 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+      <div class="subject">
+        <h3>导航分类 - 添加修改分类</h3>
+        <h5>添加或编辑导航分类</h5>
+      </div>
+    </div>
+  </div>
+  <div class="explanation" id="explanation">
+    <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span id="explanationZoom" title="收起提示"></span>
+    </div>
+    <ul>
+      <li>导航分类最多分为二级</li>
+      <li>添加或者修改分类时, 应注意选择对应的上级</li>
+    </ul>
+  </div>
+  <form action="{:U('Map/addEditMap')}" method="post" class="form-horizontal" id="map_form">
+    <div class="ncap-form-default">
+      <dl class="row">
+        <dt class="tit">
+          <label for="t_mane"><em>*</em>分类名称</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" placeholder="名称" class="input-txt" name="name" id="name" value="{$map.name}">
+          <span class="err" id="err_name" style="color:#F00; display:none;"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit">
+          <label for="t_mane"><em>*</em>地址(URL)</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" placeholder="http://www.xxx.com/xxx/xxx" class="input-txt" name="url" id="url" value="{$map.url}">
+          <span class="err" id="err_name" style="color:#F00; display:none;"></span>
+          <p class="notic"></p>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit" colspan="2">
+          <label class="" for="s_sort">上级分类</label>
+        </dt>
+        <dd class="opt">
+          <div id="cate">
+            <select name="parent_id" id="parent_id" class="class-select valid">
+                <option value="0">顶级分类</option>
+                <foreach name="cateList" item="v" >
+                    <if condition="$v['parent_id'] eq 0">                                            
+                      <option value="{$v[map_id]}">{$v[name]}</option>
+                    <else/>
+                      <option value="{$v[map_id]}">--{$v[name]}</option>
+                    </if>  
+                </foreach>                                            
+            </select>                    
+          </div>
+          <p class="notic">最多成为第二级,如果设置为顶级, 只选择顶级分类即可</p>
+        </dd>
+      </dl>
+	  <dl class="row">
+        <dt class="tit">
+          <label for="t_mane"><em>*</em>导航显示</label>
+        </dt>
+        <dd class="opt">
+          <div class="onoff">
+            <label for="status1" class="cb-enable <if condition="$map[status] eq 1">selected</if>">是</label>
+            <label for="status2" class="cb-disable <if condition="$map[status] eq 2">selected</if>">否</label>
+            <input id="status1" name="status" value="1" type="radio" <if condition="$map[status] eq 1"> checked="checked"</if>>
+            <input id="status2" name="status" value="2" type="radio" <if condition="$map[status] eq 2"> checked="checked"</if>>
+          </div>
+          <p class="notic">是否在网站地图导航栏显示</p>
+        </dd>        
+      </dl>    
+                            
+      <div class="bot"><a id="submitBtn" class="ncap-btn-big ncap-btn-green" href="JavaScript:void(0);">确认提交</a></div>
+    </div>
+    <input type="hidden" name="id" id="id" value="{$map.map_id}">
+  </form>
+</div>
+<script>  
+  $("#submitBtn").click(function(){
+      var id = $("#id").val();
+      var parent_id = $("#parent_id").val();
+      var name = $("#name").val();
+      var url = $("#url").val();
+      var status = $('input:radio[name="status"]:checked').val();
+      var data = {id:id,parent_id:parent_id,name:name,url:url,status:status};
+      $.ajax({
+        type:'post',
+        url:'{:U("Map/addEditMap")}',
+        dataType:'json',
+        data:data,
+        success:function(v){
+          if(v.statusCode ==200){
+            layer.confirm(v.retMessage,{icon:1,time:2000},function(){
+              location.href();
+            });
+          }else{
+            layer.confirm(v.retMessage,{icon:2,time:2000});
+          }
+        },
+        error:function(e){
+          layer.confirm('网络错误，请刷新重试！',{icon:2,time:2000});
+        },
+      });
+  });
+</script>
+</body>
+</html>

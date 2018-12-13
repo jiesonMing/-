@@ -1,0 +1,109 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>api设置</h3>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>请务必正确填写api信息</li>
+        </ul>
+    </div>
+    <!--表单数据-->
+    <form method="post" id="addEditGoodsForm">
+    	<div class="ncap-form-default tab_div_1">
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">API名称</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$apiInfo.shopName}" name="shopName" class="input-txt"/>
+                    <span class="err" id="err_shopName" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                	<span>*</span>
+                    <label for="record_no">店铺代码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$apiInfo.shopCode}" name="shopCode" class="input-txt"/>
+                    <span class="err" id="err_shopCode" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                	<span>*</span>
+                    <label for="record_no">店铺秘钥</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$apiInfo.shopSercet}" name="shopSercet" class="input-txt"/>
+                    <span class="err" id="err_shopSercet" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                	<span>*</span>
+                    <label for="record_no">仓库代码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$apiInfo.warehouseCode}" name="warehouseCode" class="input-txt"/>
+                    <span class="err" id="err_warehouseCode" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">API链接</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$apiInfo.apiURL}" name="apiURL" class="input-txt"/>
+                    <span class="err" id="err_apiURL" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">是否对接</label>
+                </dt>
+                <dd class="opt">
+                    <if condition="is_null($apiInfo['isJoin'])">
+                        <label><input type="radio" value="1" name="isJoin" checked="checked"/>否</label>
+                        <label><input type="radio" value="2" name="isJoin" />是</label>
+                    <else/>
+                        <label><input type="radio" value="1" name="isJoin" />否</label>
+                        <label><input type="radio" value="2" name="isJoin" checked="checked" />是</label> 
+                    </if>
+                </dd>
+            </dl>    
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">是否保税仓</label>
+                </dt>
+                <dd class="opt">
+                    <label><input type="radio" value="0" name="isBaoshui" <if condition="$apiInfo.isBaoshui eq 0">checked</if>/>否</label>
+                    <label><input type="radio" value="1" name="isBaoshui" <if condition="$apiInfo.isBaoshui eq 1">checked</if>/>是</label>
+                </dd>
+            </dl>
+
+        </div>
+        <div class="ncap-form-default">        
+            <div class="bot">            
+                <input type="hidden" name="id" value="{$apiInfo.id}">
+               <!--  <input type="hidden" name="__token__" value="{$Request.token}" /> -->
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onClick="ajax_submit_form('addEditGoodsForm','{:U('warehouse/addEditApi?is_ajax=1')}');">确认提交</a>
+            </div>
+        </div> 
+    </form>
+</div>

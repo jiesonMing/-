@@ -1,0 +1,528 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__PUBLIC__/js/ajaxupload.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <div class="subject">
+        <h3>商品管理</h3>
+        <h5>商城所有商品索引及管理</h5>
+      </div>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+    </div>
+    <ul>
+      <li>商品管理注意发布商品后清理缓存.</li>
+      <li>商品缩列图也有缓存.</li>
+    </ul>
+  </div>
+  <div class="flexigrid">
+    <div class="mDiv">
+      <div class="ftitle">
+        <h3>商品列表</h3>
+        <h5></h5>
+      </div>
+	<form action="" id="search-form2" class="navbar-form form-inline" method="post" onSubmit="return false">
+      <div class="sDiv">
+        <div class="sDiv2">           
+          <select name="cat_id" id="cat_id" class="select">
+            <option value="">所有分类</option>
+            <foreach name="categoryList" item="v" key="k" >
+                <option value="{$v['id']}" <if condition="$searchCondition['cat_id'] eq $v['id']">selected='selected'</if>> {$v['name']}</option>
+            </foreach>
+          </select>
+          <select name="brand_id" id="brand_id" class="select">
+            <option value="">所有品牌</option>
+                <foreach name="brandList" item="v" key="k" >
+                   <option value="{$v['id']}" <if condition="$searchCondition['brand_id'] eq $v['id']">selected='selected'</if>>{$v['name']}</option>
+                </foreach>
+          </select>          
+          <select name="is_on_sale" id="is_on_sale" class="select">
+            <option value="">全部</option>                  
+            <option value="1" <if condition="$searchCondition['is_on_sale'] eq 1">selected='selected'</if>>上架</option>
+            <option value="0" <if condition="$searchCondition['is_on_sale'] eq 0 and $searchCondition['is_on_sale'] neq ''">selected='selected'</if>>下架</option>
+          </select>
+            <select name="intro" class="select">
+                <option value="0">全部</option>
+                <option value="is_new" <if condition="$searchCondition['intro'] eq is_new">selected='selected'</if>>新品</option>
+                <option value="is_recommend" <if condition="$searchCondition['intro'] eq is_recommend">selected='selected'</if>>推荐</option>
+            </select>     
+
+            <!--排序规则-->
+            <input type="hidden" name="orderby1" value="goods_id" />
+            <input type="hidden" name="orderby2" value="desc" />
+          <input type="text" size="30" name="key_word" value="{$searchCondition['key_word']}" class="qsbox" placeholder="搜索词...">
+          <input type="button" id="search-btn" onClick="ajax_get_table('search-form2',1)" class="btn" value="搜索">
+        </div>
+      </div>
+     </form>
+    </div>
+    <!-- 点击enter搜索 开始 -->
+    <script type="text/javascript">
+       document.onkeydown=function(event){
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if(e && e.keyCode==27){ // 按 Esc 
+                //要做的事情
+              }
+            if(e && e.keyCode==113){ // 按 F2 
+                 //要做的事情
+               }            
+             if(e && e.keyCode==13){ // enter 键
+                 $("#search-btn").click();
+            }
+        };
+    </script>
+    <!-- 点击enter搜索 结束 -->
+    <div class="hDiv">
+      <div class="hDivBox">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th class="sign" axis="col6">
+                <div style="text-align: left; width:24px;" class="">
+                  <input name="checkbox" type="checkbox" id="checkbox_a0" class="chk_3" value="0">                            
+                  <label for="checkbox_a0"></label>
+                </div>
+              </th>
+              <th class="sign" axis="col6">
+                <div style="width: 24px;"><i class="ico-check"></i></div>
+              </th>
+              <th align="left" abbr="article_title" axis="col6" class="">
+                <div style="text-align: left; width:65px;" class="">操作</div>
+              </th>              
+              <th align="left" abbr="article_title" axis="col6" class="">
+                <div style="text-align: left; width:50px;" class="" onClick="sort('goods_id');">id</div>
+              </th>
+              <th align="left" abbr="ac_id" axis="col4" class="">
+                <div style="text-align: left; width: 300px;" class="" onClick="sort('goods_name');">商品名称</div>
+              </th>
+              <th align="center" abbr="article_show" axis="col6" class="">
+                <div style="text-align: center; width: 100px;" class="" onClick="sort('goods_sn');">商品自编码</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 80px;" class="" onClick="sort('stype');">是否保税仓</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('stype');">所属关区</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 100px;" class="" onClick="sort('cat_id');">分类</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('shop_price');">本店价格</div>
+              </th> 
+              <volist name="userRole" id='vo' length="3">
+                <th align="center" abbr="article_time" axis="col6" class="">
+                  <div style="text-align: center; width: 61px;" class="" <if condition="$vo['role_level'] eq 3">onClick="sort('firstMemberPrice');"<elseif condition="$vo['role_level'] eq 2"/>onClick="sort('secondMemberPrice');"<elseif condition="$vo['role_level'] eq 1"/>onClick="sort('thirdMemberPrice');"</if>>{$vo['role_name']}价</div>
+                </th>
+              </volist>  
+              <!-- <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 61px;" class="" onClick="sort('firstMemberPrice');">一级会员价</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 61px;" class="" onClick="sort('secondMemberPrice');">二级会员价</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 61px;" class="" onClick="sort('thirdMemberPrice');">三级会员价</div>
+              </th> -->               
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('is_recommend');">推荐</div>
+              </th>                       
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('is_new');">新品</div>
+              </th>                                     
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('is_hot');">热卖</div>
+              </th>  
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('is_on_sale');">上/下架</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('store_count');">库存</div>
+              </th>
+              <th align="center" abbr="article_time" axis="col6" class="">
+                <div style="text-align: center; width: 50px;" class="" onClick="sort('sort');">排序</div>
+              </th>                      
+              <th style="width:100%" axis="col7">
+                <div></div>
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>    
+    <div class="tDiv">
+      <div class="tDiv2">
+        <div class="fbutton">       
+          <a href="{:U('Admin/goods/addEditGoods')}">
+          <div class="add" title="添加商品">
+            <span><i class="fa fa-plus"></i>添加商品</span>
+          </div>
+          </a>          
+          </div>
+          <div class="fbutton">       
+          <a href="http://a.gdyyb.com/Admin/UserGoods/goodsImport" target="_blank">
+          <div class="add" title="添加商品">
+            <span><i class="fa fa-plus"></i>SMDS导入商品</span>
+          </div>
+          </a>          
+          </div>
+          <div class="fbutton">       
+          <a href="javascript:void(0);" id="upSale">
+          <div title="批量上架">
+            <span><i class="fa fa-level-up"></i>批量上架</span>
+          </div>
+          </a>          
+          </div>  
+          <div class="fbutton">       
+          <a href="javascript:void(0);" id="downSale">
+          <div title="批量下架">
+            <span><i class="fa fa-level-down"></i>批量下架</span>
+          </div>
+          </a>          
+          </div>  
+          <div class="fbutton">       
+          <a href="javascript:void(0);" id="setStock">
+          <div title="批量设置库存">
+            <span><i class=" fa fa-star"></i>批量设置库存</span>
+          </div>
+          </a>          
+          </div>
+          <div class="fbutton">       
+          <a href="javascript:void(0);" id="delSome">
+          <div title="批量删除">
+            <span><i class="fa fa-close"></i>批量删除</span>
+          </div>
+          </a>          
+          </div>
+          <div class="fbutton">       
+          <a href="javascript:void(0);" id="ex_goods">
+          <div title="导出商品">
+            <span><i class="fa fa-level-down"></i>导出商品</span>
+          </div>
+          </a>          
+          </div>
+          <div class="fbutton">       
+            <a href="javascript:void(0);" id="in_goodsPrice" onclick="in_goodsPrice();">
+              <div title="导出商品">
+                <span><i class="fa fa-level-up"></i>批量导入商品价格</span>
+              </div>
+            </a>          
+          </div>
+          <input type="hidden" id="page" value="{$Think.session.ajaxpage}">    
+      </div>
+      <div style="clear:both"></div>
+    </div>
+    <div class="bDiv" style="height: auto;">
+     <!--ajax 返回 --> 
+      <div id="ajax_return" cellpadding="0" cellspacing="0" border="0"></div>      
+    </div>
+
+     </div>
+</div>
+<!-- 导入商品价格 -->
+<div class="in_goodsPrice" style="display: none;text-align: center;margin-top: 20px;">
+  选择文件：<input type="button" id="chooseFile" value="选择"/>
+  <input type="text" name="filepath" id="filepath"/>
+  <p>注意：文件Excel文档，<br/>请下载模板来修改，<span><a href="__PUBLIC__/temp/inGoodsPrice.xls">商品价格模板</a></span></p>
+  <div class="ncap-form-default">        
+      <div class="bot">            
+          <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" id="sureSubmitFile">确认提交</a>
+      </div>
+  </div> 
+</div>
+
+<script>
+    $(document).ready(function(){	
+	
+		 // 表格行点击选中切换
+		$('#ajax_return').on('click','table>tbody >tr',function(){
+			 $(this).toggleClass('trSelected');	
+			 			 						
+			 var checked = $(this).hasClass('trSelected');	
+			 $(this).find('input[type="checkbox"]').attr('checked',checked); 
+			 //alert('aaa');
+		});		 	
+		// 刷选条件 鼠标 移动进去 移出 样式
+		$(".hDivBox > table > thead > tr > th").mousemove(function(){
+			$(this).addClass('thOver');
+		}).mouseout(function(){
+			$(this).removeClass('thOver');
+		});
+
+    //全选
+    $("#checkbox_a0").click(function(){
+        if($(this).prop("checked")==true){
+            $("tr td").find("input").prop("checked",true);
+        }else{
+            $("tr td").find("input").prop("checked",false);
+        }         
+    });
+    //批量上架
+    $("#upSale").click(function(){
+        if($("tbody input[type='checkbox']").is(':checked')){
+            layer.confirm('确定上架所选商品吗？',{title:'提示'},function(yes){
+                var a='upSale';//ajax地址
+                var tp='post';//数据传送方式
+                checkedIpt(a,tp);
+            }); 
+        }else{
+            layer.msg("还未选择数据！",{icon:0,time:2000});
+        }            
+    });
+    //批量下架
+    $("#downSale").click(function(){
+        if($("tbody input[type='checkbox']").is(':checked')){
+            layer.confirm('确定下架所选商品吗？',{title:'提示'},function(yes){
+                var a='downSale';//ajax地址
+                var tp='post';//数据传送方式
+                checkedIpt(a,tp);
+            }); 
+        }else{
+            layer.msg("还未选择数据！",{icon:0,time:2000});
+        }            
+    });
+
+    $("#ex_goods").click(function(){
+        location.href="{:U('Admin/goods/ex_goods')}";
+    });
+    //批量删除
+    $("#delSome").click(function(){
+      if($("tbody input[type='checkbox']").is(':checked')){
+            layer.confirm('确定批量删除商品吗？请谨慎操作！',{title:'提示'},function(yes){
+                var inp=$("tbody tr td").find("input[type='checkbox']");
+                var len=$("tbody tr td").find("input[type='checkbox']").length;
+                var str='';
+                for(var i=0;i<len;i++){
+                    if(inp[i].checked){
+                        str+=inp[i].value+',';
+                    }
+                }
+                str=str.substring(str.length-1,",");
+                var postdata = {ids:str};
+                $.ajax({
+                       type: "POST",
+                       url: "{:U('Admin/goods/delSome')}",
+                       dataType : 'json',
+                       data: postdata,
+                       success: function(el){
+                          // console.log(el);return false;
+                          var error=el.data.error;
+                          var success=el.data.success;
+                          var str='';
+                          if(success){
+                              str+='<p>成功删除：'+success['num']+'个商品</p>';
+                          }
+                          if(error){
+                              $.each(error,function(index,value){
+                                  str+='<p>ID-'+value['goodsId']+':--'+value['msg']+'</p>';
+                              });
+                          }
+                          var index=layer.open({
+                              icon:'1',
+                              title:'成功提示信息：',
+                              content:str,
+                              end: function(){
+                                  location.reload();
+                              }
+                          });
+                          layer.style(index,{
+                              width:'400px',
+                              top:'120px'
+                          });                                                   
+                       }
+                });
+            }); 
+        }else{
+            layer.msg("还未选择数据！",{icon:0,time:2000});
+        } 
+    });
+    //批量设置库存
+    $("#setStock").click(function(){
+        if($("tbody input[type='checkbox']").is(':checked')){
+            layer.prompt({title: '库存数量', formType: 0}, function(text, index){
+                var inp=$("tbody tr td").find("input[type='checkbox']");
+                var len=$("tbody tr td").find("input[type='checkbox']").length;
+                var str='';
+                for(var i=0;i<len;i++){
+                    if(inp[i].checked){
+                        str+=inp[i].value+',';
+                    }
+                }
+                str=str.substring(str.length-1,",");
+                var postdata = {ids:str,num:text};
+                $.ajax({
+                       type: "POST",
+                       url: "{:U('Admin/goods/setStock')}",
+                       dataType : 'json',
+                       data: postdata,
+                       success: function(el){
+                          // console.log(el);return false;
+                          if (el.statusCode==200) {
+                              layer.msg(el.retMessage,{icon:1,time:2000},function(){
+                                  location.reload();
+                                  return true;
+                              });                                
+                          }else{
+                              layer.msg(el.retMessage,{icon:2,time:2000});
+                          }                                                   
+                       }
+                });
+                layer.close(index);
+            }); 
+        }else{
+            layer.msg("还未选择数据！",{icon:0,time:2000});
+        }            
+    });
+    //选择勾选的选项
+    function checkedIpt(a,tp){
+        var inp=$("tbody tr td").find("input[type='checkbox']");
+        var len=$("tbody tr td").find("input[type='checkbox']").length;
+        var str='';
+        for(var i=0;i<len;i++){
+            if(inp[i].checked){
+                str+=inp[i].value+',';
+            }
+        }
+        str=str.substring(str.length-1,",");
+        if(tp=='get'){
+            location.href='__URL__/?id='+str;
+        }else{
+            $.ajax({
+               type: tp,
+               dataType:'json',
+               url: "{:U('Admin/goods/"+a+"')}",
+               data: "ids="+str,
+               success: function(el){
+                    // console.log(el);return false;
+                    if (el.statusCode==200) {
+                        layer.msg(el.retMessage,{icon:1,time:2000},function(){
+                            location.reload();
+                        });
+                    }else{
+                        layer.msg(el.retMessage,{icon:0,time:2000});
+                    }                                                             
+               }
+            });
+        }
+    }				
+	});
+</script>
+<script>
+    $(document).ready(function () {
+        var page = $('#page').val();
+        // ajax 加载商品列表
+        ajax_get_table('search-form2', page);
+
+    });
+
+    // ajax 抓取页面 form 为表单id  page 为当前第几页
+    function ajax_get_table(form, page) {
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=goods&a=ajaxGoodsList&p=" + page,//+tab,
+            data: $('#' + form).serialize(),// 你的formid
+            success: function (data) {
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+	
+        // 点击排序
+        function sort(field)
+        {
+           $("input[name='orderby1']").val(field);
+           var v = $("input[name='orderby2']").val() == 'desc' ? 'asc' : 'desc';             
+           $("input[name='orderby2']").val(v);
+           ajax_get_table('search-form2',cur_page);
+        }
+        
+        // 删除操作
+        function del(id)
+        {
+            if(!confirm('确定要删除吗?'))
+                return false;
+		$.ajax({
+			url:"/index.php?m=Admin&c=goods&a=delGoods&id="+id,
+			success: function(v){	
+                                var v =  eval('('+v+')');                                 
+                                if(v.hasOwnProperty('status') && (v.status == 1))
+                                        ajax_get_table('search-form2',cur_page);                                                      
+                                else
+                                        layer.msg(v.msg, {icon: 2,time: 1000}); //alert(v.msg);
+			}
+		}); 
+               return false;
+          }	
+    //批量导入商品价格
+    function in_goodsPrice(){
+      layer.open({
+        type:1,
+        title:'导入商品价格',
+        area:['300px','200px'],
+        content:$('.in_goodsPrice')
+      });
+    }
+</script>
+<script type="text/javascript">
+    $(function ()
+    {
+        // 创建一个上传参数
+        var uploadOption =
+        {
+            // 提交目标
+            action: "/index.php?m=Admin&c=Goods&a=inGoodsPrice",
+            // 服务端接收的名称
+            name: "file",
+            type: "post",
+            // 自动提交
+            autoSubmit: false,
+            responseType: 'json',
+            // 选择文件之后…
+            onChange: function (file, extension) {
+                if (new RegExp(/(xls)|(xlsx)/i).test(extension)) {
+                    $("#filepath").val(file);
+                } else {
+                    layer.msg('上传文件格式为：xls、xlsx');
+                }
+            },
+            // 开始上传文件
+            onSubmit: function (file, extension) {
+                //$("#state").val("正在上传" + file + "...");
+                //var clos=layer.msg('正在上传'+file+'...',{time:1000});
+            },
+            // 上传完成之后
+            onComplete: function (file, response) {
+              //console.log(response);return false;
+                if(response.statusCode==200){
+                  layer.msg(response.data,{icon:1,time:1000},function(){
+                    parent.window.location.reload();
+                    layer.closeAll();
+                  })
+                }else{
+                  layer.msg(response.data,{icon:0,time:2000},function(){
+                    layer.close();
+                  })
+                }
+            }
+        }
+        // 初始化图片上传框
+        var oAjaxUpload = new AjaxUpload('#chooseFile', uploadOption);
+        // 给上传按钮增加上传动作
+        $("#sureSubmitFile").click(function ()
+        {
+            oAjaxUpload.submit();
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<include file="public/layout" />
+<script src="__PUBLIC__/js/jquery.tabs.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.demo2').Tabs({
+            event:'click'
+        });
+    });
+</script>
+<style type="text/css">
+  div  .box { margin:20px 30px;}
+.tab_menu { overflow: hidden; border-bottom:2px solid #ddd; padding-left:10px;}
+.tab_menu li { padding:3px 20px; float:left;  line-height:28px; color: #333; margin-right:3px; border-left:1px solid #ddd;border-top:1px solid #ddd;border-right:1px solid #ddd; border-radius:2px 2px 0 0; background:#eee; text-align:center; cursor:pointer;}
+.tab_menu li.current {  color: #FFF; background: #ec5151; font-weight:bold; border-left:1px solid #ec5151;border-top:1px solid #ec5151;border-right:1px solid #ec5151; }
+div .box .tab_box {  padding: 20px;}
+div .box .tab_box li { display:flex; line-height:28px; padding:10px 0; overflow: hidden; border-bottom:1px solid #f0f0f0;}
+div .box .tab_box li p { font-size: 12px; width:120px; display:block; text-align:right; padding-right:10px; color: #666;}
+div .box .tab_box li input{ border-radius:3px; line-height:28px; border:1px solid #ddd; padding:0 8px; font-size:12px; color:#666;}
+div .box .hide { display: none;}
+div .box .tab_box select{min-width:100px;}
+
+.tab_table{ width:700px;border-right:1px solid #eee;border-top:1px solid #eee; }
+.tab_table td{border-left:1px solid #eee;border-bottom:1px solid #eee; padding:8px 15px; line-height:25px;}
+.tab_table thead{ background:#f0f0f0;}
+</style>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商城设置</h3>
+                <h5>网站全局内容基本选项设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+                <li><a href="{:U('System/index')}"><span>商城信息</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'basic'))}" ><span>基本设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'shopping'))}"><span>购物流程</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'sms'))}" ><span>短信设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'smtp'))}" ><span>邮件设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'water'))}" ><span>水印设置</span></a></li>
+                <!-- <li><a href="{:U('System/index',array('inc_type'=>'distribut'))}" ><span>分销设置</span></a></li> -->
+                <!-- <li><a href="{:U('System/index',array('inc_type'=>'system'))}" class="current"><span>系统设置</span></a></li> -->
+                <!--<li><a href="{:U('System/index',array('inc_type'=>'wap'))}" ><span>WAP设置</span></a></li>-->
+                <!--<li><a href="{:U('System/index',array('inc_type'=>'extend'))}" ><span>扩展设置</span></a></li>-->
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <div class="box demo2">
+        <ul class="tab_menu">
+            <li class="current"><i class="fa fa-file-text-o"></i> 平台设置</li>
+            <!-- <li><i class="fa fa-user"></i> 店铺设置</li> -->
+            <li><i class="fa fa-cny"></i>支付设置</li>                      
+        </ul>
+        <div class="tab_box">
+            <div class="ncap-form-default">
+                <form method="post" id="handlepost1" action="{:U('System/handle')}" enctype="multipart/form-data" name="form1">
+                    <input type="hidden" name="settings_id" value="{$config_setting.id}" />
+                    <include file="system/system_setting" />
+                    <div class="bot">
+                        <input type="hidden" name="inc_type" value="{$inc_type}">
+                        <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="adsubmit1()">确认提交</a>
+                    </div>
+                </form>
+            </div>
+            <!-- <div class="hide ncap-form-default">
+                <form method="post" id="handlepost2" action="{:U('System/handle')}" enctype="multipart/form-data" name="form1">
+                    <input type="hidden" name="shop_id" value="{$config_shop.id}" />
+                    <include file="system/system_shop" />
+                    <div class="bot">
+                        <input type="hidden" name="inc_type" value="{$inc_type}">
+                        <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="adsubmit2()">确认提交</a>
+                    </div>
+                </form>
+            </div>    -->                
+            <div class="hide ncap-form-default">
+                <form method="post" id="handlepost3" action="{:U('System/handle')}" enctype="multipart/form-data" name="form1">
+                    <input type="hidden" name="pay_shop_id" value="{$config_pay_shop.id}" />
+                    <include file="system/system_pay_shop" />
+                    <div class="bot">
+                        <input type="hidden" name="inc_type" value="{$inc_type}">
+                        <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="adsubmit3()">确认提交</a>
+                    </div>
+                </form>
+            </div>
+            
+
+        </div>
+        </div>
+    </div>
+<!--      <form method="post" id="handlepost" action="{:U('System/handle')}" enctype="multipart/form-data" name="form1">
+        
+     </form> -->
+</div>
+<div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
+<script>
+    function adsubmit1(){
+        //alert($('#handlepost1').serialize());return false;
+        $('#handlepost1').submit();
+    }
+    function adsubmit2(){
+        $('#handlepost2').submit();
+    }
+    function adsubmit3(){
+        $('#handlepost3').submit();
+    }
+</script>
+</body>
+</html>

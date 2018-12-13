@@ -1,0 +1,127 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+<meta charset="utf-8">
+<script type="text/javascript" src="__ROOT__/public/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__ROOT__/public/js/layer/layer.js"></script>
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="__PUBLIC__/static/js/admin.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/common.js"></script>
+<script src="__PUBLIC__/js/myAjax2.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+<style type="text/css">
+table {
+    border-collapse: collapse; 
+    font-family: Futura, Arial, sans-serif;
+    float:center; 
+}  
+caption{ 
+    font-size: larger;
+    margin: 1em auto;
+}  
+th,td {  
+    padding: .65em; 
+}  
+td{  
+    border: 1px solid#777;
+} 
+</style>  
+</head>  
+<body id="ajax_returnBody">
+    <if condition="empty($userList)">
+        <h2>该账号暂无子账号信息！</h2>
+    <else/>  
+        <table align="center">  
+            <caption>子账户查询列表</caption>  
+            <thead>  
+                <tr>  
+                    <th>ID </th> 
+                    <th>会员昵称</th>
+                    <th>用户等级</th>
+                    <th>邮件地址</th>
+                    <th>手机号码</th>
+                    <th>注册日期</th>
+                    <th>操作</th>
+                </tr>      
+            </thead>  
+            <tbody>
+                
+                
+                <volist name="userList" id="list">  
+                    <tr>  
+                        <td>{$list.user_id}</td> 
+                        <td>{$list.nickname}</td>  
+                        <td>
+                            <if condition="$list['myLevel'] eq 0">
+                                    普通用户
+                                <elseif condition="$list['myLevel'] eq 1" />
+                                    三级用户
+                                <elseif condition="$list['myLevel'] eq 2" />
+                                    二级用户
+                                <elseif condition="$list['myLevel'] eq 3" />
+                                    一级用户
+                                <else />
+                                    未知用户
+                            </if>
+                        </td>
+                        <td>{$list.email}
+                            <if condition="($list['email_validated'] eq 0) AND ($list['email'])">
+                                (未验证)
+                            </if>
+                        </td>
+                        <td>{$list.mobile}
+                            <if condition="($list['mobile_validated'] eq 0) AND ($list['mobile'])">
+                                (未验证)
+                            </if>
+                        </td>
+                        <td>{$list.reg_time|date='Y-m-d H:i',###}</td>
+                        <td><a class="btn blue" href="{:U('Admin/user/detail',array('id'=>$list['user_id']))}"><i class="fa fa-pencil-square-o"></i>查看编辑</a>&nbsp;| &nbsp;<a class="btn red"  href="javascript:void(0)" data-id="{$list['user_id']}"  data-url="{:U('Admin/user/ajax_delete')}" onClick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a></td>
+                    </tr>
+                </volist>
+            </tbody>  
+        </table>
+        {$page}
+    </if>
+<script>
+    function delfun(obj) {
+        // 删除按钮
+        layer.confirm('确认删除？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            $.ajax({
+                type: 'post',
+                url: $(obj).attr('data-url'),
+                data: {id : $(obj).attr('data-id')},
+                dataType: 'json',
+                success: function (data) {
+                    layer.closeAll();
+                    if (data.status == 1) {
+                        $(obj).parent().parent().parent().remove();
+                    } else {
+                        layer.alert(data.msg, {icon: 2});
+                    }
+                }
+            })
+        }, function () {
+        });
+    }
+    // 点击分页触发的事件
+    $(".pagination  a").click(function(){
+        cur_page = $(this).data('p');
+        ajax_get_table('search-form2',cur_page);
+    });
+    function ajax_get_table(form, page) {
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=User&a=child&p=" + page,//+tab,
+            data: $('#' + form).serialize(),// 你的formid
+            success: function (data) {
+                $("#ajax_returnBody").html('');
+                $("#ajax_returnBody").append(data);
+            }
+        });
+    }
+</script>      
+</body>  
+</html>  

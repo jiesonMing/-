@@ -1,0 +1,272 @@
+<include file="public/layout" />
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;" id="ajax_returnBody">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>会员分销记录</h3>
+                <h5>网站系统会员分销索引与管理</h5>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+        <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+        </div>
+        <ul>
+			<li>会员分销记录历史明细</li>
+		</ul>
+    </div>   
+    <div class="flexigrid">
+        <div class="mDiv">
+            <div class="ftitle">
+                <h3>会员分销记录列表</h3>
+                <h5>(共{$count}条记录)</h5>
+            </div>
+            <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
+            <div title="导出数据" class="pReload" id="exportData"><i class="fa fa-cloud-download">导出选中的数据</i></div>
+            <form class="navbar-form form-inline" id="search-form" method="get" action="{:U('/Admin/User/distribution')}" onsubmit="return check_form();">
+                <input type="hidden" name="create_time" id="create_time" value="{$create_time}">
+                <div class="sDiv">
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input type="text" size="30" id="start_time" name="start_time" value="{$condition['start_time']}" placeholder="起始时间" class="qsbox">
+                        <input type="button" class="btn" value="起始时间">
+                    </div>
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input type="text" size="30" id="end_time" name="end_time" value="{$condition['end_time']}" placeholder="截止时间" class="qsbox">
+                        <input type="button" class="btn" value="截止时间">
+                    </div>
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input size="30" id="user_id" placeholder="获利用户名称" value="{$Think.request.parentUsername}" name="parentUsername" class="qsbox" type="text">
+                    </div>
+                    <div class="sDiv2" style="margin-right: 10px;">
+                        <input size="30" id="user_id" placeholder="下单人" value="{$Think.request.nickname}" name="nickname" class="qsbox" type="text">
+                    </div>
+                    <div class="sDiv2">
+                        <input class="btn" value="搜索" type="submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="hDiv">
+            <div class="hDivBox">
+                <table cellspacing="0" cellpadding="0" style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th align="center" axis="col0">
+                            <div style="text-align: center; width:20px;">
+                                <input name="checkbox" type="checkbox" id="checkbox_a0" class="chk_3" value="">
+                                <label for="checkbox_a0"></label>
+                            </div>
+                        </th>
+                        <th class="sign" axis="col0">
+                            <div style="width: 24px;"><i class="ico-check"></i></div>
+                        </th>
+                        <th align="center" abbr="article_title" axis="col3" class="">
+                            <div style="text-align: center; width: 50px;" class="">记录ID</div>
+                        </th>
+                        <th align="center" abbr="ac_id" axis="col4" class="">
+                            <div style="text-align: center; width: 80px;" class="">获利用户id</div>
+                        </th>
+                        <th align="center" abbr="ac_id" axis="col4" class="">
+                            <div style="text-align: center; width: 140px;" class="">获利用户名称</div>
+                        </th>
+                        <th align="center" abbr="article_time" axis="col6" class="">
+                            <div style="text-align: center; width: 100px;" class="">获利金额</div>
+                        </th>
+                        <th align="center" abbr="article_time" axis="col6" class="">
+                            <div style="text-align: center; width: 120px;" class="">订单编号</div>
+                        </th>
+                        <th align="center" abbr="article_time" axis="col6" class="">
+                            <div style="text-align: center; width: 160px;" class="">下单人</div>
+                        </th>
+                        
+                        <th align="center" abbr="article_time" axis="col6" class="">
+                            <div style="text-align: center; width: 120px;" class="">获利分销时间</div>
+                        </th>
+                        <th align="center" abbr="article_time" axis="col6" class="">
+                            <div style="text-align: center; width: 120px;" class="">描述</div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!--<div class="tDiv">-->
+            <!--<div class="tDiv2">-->
+                <!--<div class="fbutton"> <a href="{:U('Finance/ajax_remittance',array('act'=>'export'))}">-->
+                    <!--<div class="add" title="导出excel">-->
+                        <!--<span><i class="fa fa-plus"></i>导出excel</span>-->
+                    <!--</div>-->
+                <!--</a> </div>-->
+            <!--</div>-->
+            <!--<div style="clear:both"></div>-->
+        <!--</div>-->
+        <div class="bDiv" style="height: auto;" id="ajax_return">
+            <div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+                <table>
+                    <tbody>
+                    <volist name="list" id="v" key='k'>
+                        <tr data-id="{$list['user_id']}">
+                            <td align="center" axis="col0">
+                                <div style="text-align: center; width:20px;">
+                                    <input name="checkbox" type="checkbox" id="checkbox_a{$k+1}" class="chk_3" value="{$v.id}">
+                                    <label for="checkbox_a{$k+1}"></label>
+                                </div>
+                            </td>
+                            <td class="sign">
+                                <div style="width: 24px;"><i class="ico-check"></i></div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 50px;">{$v.id}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 80px;">{$v.parentUser}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 140px;">{$v.parentUsername}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 100px;">{$v.user_money}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 120px;">{$v.order_sn}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 160px;">{$v.nickname}</div>
+                            </td>                        
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 120px;">{$v.change_time|date="Y-m-d H:i:s",###}</div>
+                            </td>
+                            <td align="left" class="">
+                                <div style="text-align: center; width: 120px;">{$v.desc}</div>
+                            </td>
+                        </tr>
+                    </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--分页位置-->
+        {$show} 
+        <div class="dataTables_paginate paging_simple_numbers" >
+            <ul class="pagination">
+                <li class="paginate_button <if condition='$pageNum eq 10'>active</if>">
+                    <a href="{:U('/Admin/User/distribution',array('pageNum'=>10))}">10</a>
+                </li>
+                <li class="paginate_button <if condition='$pageNum eq 20'>active</if>">
+                    <a href="{:U('/Admin/User/distribution',array('pageNum'=>20))}">20</a>
+                </li>
+                <li class="paginate_button <if condition='$pageNum eq 50'>active</if>">
+                    <a href="{:U('/Admin/User/distribution',array('pageNum'=>50))}">50</a>
+                </li>
+                <li class="paginate_button <if condition='$pageNum eq 100'>active</if>">
+                    <a href="{:U('/Admin/User/distribution',array('pageNum'=>100))}">100</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        // 点击刷新数据
+        $('.fa-refresh').click(function(){
+            location.href = location.href;
+        });
+        $('#flexigrid >table>tbody>tr').click(function(){
+            $(this).toggleClass('trSelected');
+        });
+
+        $('#start_time').layDate();
+        $('#end_time').layDate();
+
+        $("#checkbox_a0").click(function(){
+            if($(this).prop("checked")==true){
+                $("tr td").find("input").prop("checked",true);
+            }else{
+                $("tr td").find("input").prop("checked",false);
+            }         
+        });
+        $("#exportData").click(function(){
+            if($("tbody input[type='checkbox']").is(':checked')){
+                layer.confirm('确定导出所选数据吗？',{title:'提示'},function(yes){
+                    var a='exportData';//ajax地址
+                    var tp='post';//数据传送方式
+                    checkedIpt(a,tp);
+                }); 
+            }else{
+                layer.msg("还未选择数据！",{icon:0,time:2000});
+            }            
+        });
+    });
+
+    function check_form(){
+        var start_time = $.trim($('#start_time').val());
+        var end_time =  $.trim($('#end_time').val());
+        if(start_time == '' ^ end_time == ''){
+            layer.alert('请选择完整的时间间隔', {icon: 2});
+            return false;
+        }
+        if(start_time !== '' && end_time !== ''){
+            $('#create_time').val(start_time+" - "+end_time);
+        }
+        if(start_time == '' && end_time == ''){
+            $('#create_time').val('');
+        }
+        return true;
+    }
+    function checkedIpt(a,tp){
+        var inp=$("tbody tr td").find("input[type='checkbox']");
+        var len=$("tbody tr td").find("input[type='checkbox']").length;
+        var str='';
+        for(var i=0;i<len;i++){
+            if(inp[i].checked){
+                str+=inp[i].value+',';
+            }
+        }
+        str=str.substring(str.length-1,",");
+        if(tp=='get'){
+            location.href='__URL__/?id='+str;
+        }else{
+            $.ajax({
+               type: tp,
+               dataType:'json',
+               url: "{:U('Admin/User/"+a+"')}",
+               data: "ids="+str,
+               success: function(el){
+                    if (el.statusCode==200) {
+                        layer.msg(el.retMessage,{icon:1,time:2000},function(){
+                            window.location.href="/index.php?m=Admin&c=User&a=exportData&ids="+el.data;
+                        });
+                    }else{
+                        layer.msg(el.retMessage,{icon:0,time:2000});
+                    }                                                             
+               }
+            });
+        }
+    }
+    // 点击分页触发的事件
+    $(".pagination  a").click(function(){
+        cur_page = $(this).data('p');
+        ajax_get_table('search-form2',cur_page);
+    });
+    function ajax_get_table(form, page) {
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=User&a=distribution&p=" + page,//+tab,
+            data: $('#' + form).serialize(),// 你的formid
+            success: function (data) {
+                $("#ajax_returnBody").html('');
+                $("#ajax_returnBody").append(data);
+            }
+        });
+    }
+</script>
+</body>
+</html>

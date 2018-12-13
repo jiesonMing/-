@@ -1,0 +1,470 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>新增/编辑配置信息</h3>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>请务必正确填写配置信息</li>
+        </ul>
+    </div>
+    <!--表单数据-->
+    <div class="ncap-form-default tab_div_1">
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="settingName">配置名称</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.settingName}" style="width:400px !important;" id="settingName" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="companyName">电商企业名称</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.companyName}" style="width:400px !important;" id="companyName" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="customsNo">电商海关十位编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.customsNo}" style="width:400px !important;" id="customsNo" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="customsNo">广州单一口岸编号</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.gzeportcode}" style="width:400px !important;" id="gzeportcode" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="ciqNo">国检组织机构代码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqCode}" style="width:400px !important;" id="ciqCode" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="ciqNo">电商企业国检备案号</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqNo}" style="width:400px !important;" id="ciqNo" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="ciqBNo">电商平台国检备案号</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqBNo}" style="width:400px !important;" id="ciqBNo" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="shopDomain">电商平台地址</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.shopDomain}" style="width:400px !important;" id="shopDomain" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="DXPId">海关总署dxpId</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.DXPId}" style="width:400px !important;" id="DXPId" class="input-txt"/>
+            </dd>
+        </dl>    
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="ciqHost">国检ftpHost</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqHost}" style="width:400px !important;" id="ciqHost" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="ciqPort">国检ftp端口</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqPort}" style="width:400px !important;" style="width:400px !important;" id="ciqPort" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="ciqUser">国检ftp账号</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqUser}" style="width:400px !important;" id="ciqUser" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="ciqPass">国检ftp密码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqPass}" style="width:400px !important;" id="ciqPass" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="ciqIn">国检ftp上传目录</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqIn}" style="width:400px !important;" id="ciqIn" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="ciqOut">国检ftp下载目录</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqOut}" style="width:400px !important;" id="ciqOut" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="cusHost">海关ftphost</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusHost}" style="width:400px !important;" id="cusHost" class="input-txt"/>
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="cusPort">海关ftp端口</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusPort}" style="width:400px !important;" id="cusPort" class="input-txt"/>
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="cusUser">海关ftp账号</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusUser}" style="width:400px !important;" id="cusUser" class="input-txt"/>
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="cusPass">海关ftp密码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusPass}" style="width:400px !important;" id="cusPass" class="input-txt"/>
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="cusIn">海关ftp上传目录</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusIn}" style="width:400px !important;" id="cusIn" class="input-txt"/>
+            </dd>
+        </dl>
+
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="cusOut">海关ftp下载目录</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.cusOut}" style="width:400px !important;" id="cusOut" class="input-txt"/>
+            </dd>
+        </dl>
+    </div>
+    <div class="ncap-form-default">        
+        <div class="bot">            
+            <input type="hidden" name="id" value="{$apiInfo.id}">
+            <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green submit">提交</a>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function(){
+        var isClick=true;
+        $(".submit").click(function(){
+            if(isClick){
+                isClick=false;
+                var settingName=$("#settingName").val();
+                if($.trim(settingName)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'配置名称不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var companyName=$("#companyName").val();
+                if($.trim(companyName)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'电商企业名称不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var customsNo=$("#customsNo").val();
+                if($.trim(customsNo)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'电商海关十位编码不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var gzeportcode=$("#gzeportcode").val();
+                var ciqCode=$("#ciqCode").val();
+                var ciqNo=$("#ciqNo").val();
+                var ciqBNo=$("#ciqBNo").val();
+                var shopDomain=$("#shopDomain").val();
+                if($.trim(shopDomain)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'电商平台地址不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var DXPId=$("#DXPId").val();
+                if($.trim(DXPId)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关总署dxpId不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var ciqHost=$("#ciqHost").val();
+                var ciqPort=$("#ciqPort").val();
+                var ciqUser=$("#ciqUser").val();
+                var ciqPass=$("#ciqPass").val();
+                var ciqIn=$("#ciqIn").val();
+                var ciqOut=$("#ciqOut").val();
+                var cusHost=$("#cusHost").val();
+                if($.trim(cusHost)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关ftphost不能为空1'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var cusPort=$("#cusPort").val();
+                if($.trim(cusPort)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关ftp端口不能为空1'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var cusUser=$("#cusUser").val();
+                if($.trim(cusUser)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关ftp账号不能为空1'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var cusPass=$("#cusPass").val();
+                if($.trim(cusPass)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关ftp密码不能为空1'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var cusIn=$("#cusIn").val();
+                if($.trim(cusIn)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关ftp上传目录不能为空1'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var cusOut=$("#cusOut").val();
+                if($.trim(cusOut)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'海关ftp下载目录不能为空1'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var id="{$id}";
+                var postdata={id:id,settingName:settingName,companyName:companyName,customsNo:customsNo,gzeportcode:gzeportcode,ciqCode:ciqCode,ciqNo:ciqNo,ciqBNo:ciqBNo,shopDomain:shopDomain,DXPId:DXPId,ciqHost:ciqHost,ciqPort:ciqPort,ciqUser:ciqUser,ciqPass:ciqPass,ciqIn:ciqIn,ciqOut:ciqOut,cusHost:cusHost,cusPort:cusPort,cusUser:cusUser,cusPass:cusPass,cusIn:cusIn,cusOut:cusOut};
+                var url="/Admin/Setting/editSetting";
+                $.ajax({
+                    type : 'POST',
+                    url : url,
+                    dataType : 'json',
+                    data : postdata,
+                    success : function(el){
+                        //console.log(el);return false;
+                        if(el.statusCode==200){
+                            var index=layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'操作成功',
+                                end: function(){
+                                   location.reload();
+                                }
+                            });
+                            layer.style(index,{
+                                width:'400px',
+                                top:'120px'
+                            });
+                        }else{
+                            var index=layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage
+                            });
+                            layer.style(index,{
+                                width:'400px',
+                                top:'120px'
+                            });
+                            return false;
+                        }
+                    },
+                    error: function(el){
+                        var index=layer.open({
+                             type:0,
+                             icon:'2',
+                             title:'错误提示信息：',
+                             content:'操作失败，请刷新重试'
+                         });
+                         layer.style(index,{
+                             width:'400px',
+                             top:'120px'
+                         });
+                         return false;
+                    }
+                });
+            }else{
+                var index=layer.open({
+                    type:0,
+                    icon:'2',
+                    title:'错误提示信息：',
+                    content:'提交中，请稍候。。。'
+                });
+                layer.style(index,{
+                    width:'400px',
+                    top:'120px'
+                });
+                return false;
+            }
+        }); 
+    });
+</script>
+</html>

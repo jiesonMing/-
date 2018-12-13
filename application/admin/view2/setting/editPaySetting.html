@@ -1,0 +1,428 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>新增/编辑支付配置信息</h3>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>请务必正确填写支付配置信息</li>
+        </ul>
+    </div>
+    <!--表单数据-->
+    <div class="ncap-form-default tab_div_1">
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="payShopName">支付配置名称</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.payShopName}" style="width:400px !important;" id="payShopName" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="code">支付方式</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.code}" style="width:400px !important;" id="code" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="payCompanyName">支付企业名称</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.payCompanyName}" style="width:400px !important;" id="payCompanyName" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                    <span>*</span>
+                <label for="payCusCode">支付企业海关十位编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.payCusCode}" style="width:400px !important;" id="payCusCode" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                    <span>*</span>
+                <label for="payurl">支付接口</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.payurl}" style="width:400px !important;" id="payurl" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                    <span>*</span>
+                <label for="payid">支付id(国内)</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.payid}" style="width:400px !important;" id="payid" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="paytoken">支付MD5(国内)</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.paytoken}" style="width:400px !important;" id="paytoken" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <label for="intelpayid">支付id(国际)</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.intelpayid}" style="width:400px !important;" id="intelpayid" class="input-txt"/>
+            </dd>
+        </dl>    
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="intelpaytoken">支付MD5(国际)</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.intelpaytoken}" style="width:400px !important;" id="intelpaytoken" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="payType">支付类型</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.payType}" style="width:400px !important;" style="width:400px !important;" id="payType" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <label for="customspaytype">支付单类型</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.customspaytype}" style="width:400px !important;" id="customspaytype" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <label for="bizTypeCode">进口业务类型</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.bizTypeCode}" style="width:400px !important;" id="bizTypeCode" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <label for="orderFlowType">业务类型编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.orderFlowType}" style="width:400px !important;" id="orderFlowType" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="customsCode">支付单海关编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.customsCode}" style="width:400px !important;" id="customsCode" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <label for="ciqCode">支付单国检编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.ciqCode}" style="width:400px !important;" id="ciqCode" class="input-txt"/>
+            </dd>
+        </dl> 
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="currno">币制编码</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.currno}" style="width:400px !important;" id="currno" class="input-txt"/>
+            </dd>
+        </dl>
+        <dl class="row">
+            <dt class="tit">
+                <span>*</span>
+                <label for="limit">支付限额</label>
+            </dt>
+            <dd class="opt">
+                <input type="text" value="{$data.limit}" style="width:400px !important;" id="limit" class="input-txt"/>
+            </dd>
+        </dl>
+    </div>
+    <div class="ncap-form-default">        
+        <div class="bot">            
+            <input type="hidden" name="id" value="{$apiInfo.id}">
+            <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green submit">提交</a>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(function(){
+        var isClick=true;
+        $(".submit").click(function(){
+            if(isClick){
+                isClick=false;
+                var payShopName=$("#payShopName").val();
+                if($.trim(payShopName)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付配置名称不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }                
+                var code=$("#code").val();
+                if($.trim(code)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付方式不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var payCompanyName=$("#payCompanyName").val();
+                if($.trim(payCompanyName)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付企业名称不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var payCusCode=$("#payCusCode").val();
+                if($.trim(payCusCode)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付企业海关十位编码不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var payurl=$("#payurl").val();
+                if($.trim(payurl)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付接口不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var payid=$("#payid").val();
+                if($.trim(payid)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付id(国内)不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var paytoken=$("#paytoken").val();
+                var intelpayid=$("#intelpayid").val();
+                if($.trim(intelpayid)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付id(国际)不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var intelpaytoken=$("#intelpaytoken").val();
+                var payType=$("#payType").val();
+                if($.trim(payType)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付类型不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var customspaytype=$("#customspaytype").val();
+                var orderFlowType=$("#orderFlowType").val();
+                var bizTypeCode=$("#bizTypeCode").val();
+                var customsCode=$("#customsCode").val();
+                if($.trim(customsCode)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付单海关编码不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var ciqCode=$("#ciqCode").val();
+                var currno=$("#currno").val();
+                if($.trim(currno)==''){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'币制编码不能为空'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var limit1=$("#limit").val();
+                var limit=parseInt(limit1);
+                if(!$.isNumeric(limit) || limit<=0){
+                    isClick=true;
+                    var index=layer.open({
+                        type:0,
+                        icon:'2',
+                        title:'错误提示信息：',
+                        content:'支付限额不能小于0'
+                    });
+                    layer.style(index,{
+                        width:'400px',
+                        top:'120px'
+                    });
+                    return false;
+                }
+                var id="{$id}";
+                var postdata={id:id,payShopName:payShopName,code:code,payCompanyName:payCompanyName,payCusCode:payCusCode,payurl:payurl,payid:payid,paytoken:paytoken,intelpayid:intelpayid,intelpaytoken:intelpaytoken,payType:payType,customspaytype:customspaytype,bizTypeCode:bizTypeCode,orderFlowType:orderFlowType,customsCode:customsCode,ciqCode:ciqCode,currno:currno,limit:limit};
+                var url="/Admin/Setting/editPaySetting";
+                $.ajax({
+                    type : 'POST',
+                    url : url,
+                    dataType : 'json',
+                    data : postdata,
+                    success : function(el){
+                        isClick=true;
+                        if(el.statusCode==200){
+                            var index=layer.open({
+                                type:0,
+                                icon:'1',
+                                title:'成功提示信息：',
+                                content:'操作成功',
+                                end: function(){
+                                   location.reload();
+                                }
+                            });
+                            layer.style(index,{
+                                width:'400px',
+                                top:'120px'
+                            });
+                        }else{
+                            var index=layer.open({
+                                type:0,
+                                icon:'2',
+                                title:'错误提示信息：',
+                                content:el.retMessage
+                            });
+                            layer.style(index,{
+                                width:'400px',
+                                top:'120px'
+                            });
+                            return false;
+                        }
+                    },
+                    error: function(el){
+                        isClick=true;
+                        var index=layer.open({
+                             type:0,
+                             icon:'2',
+                             title:'错误提示信息：',
+                             content:'操作失败，请刷新重试'
+                         });
+                         layer.style(index,{
+                             width:'400px',
+                             top:'120px'
+                         });
+                         return false;
+                    }
+                });
+            }else{
+                var index=layer.open({
+                    type:0,
+                    icon:'2',
+                    title:'错误提示信息：',
+                    content:'提交中，请稍候。。。'
+                });
+                layer.style(index,{
+                    width:'400px',
+                    top:'120px'
+                });
+                return false;
+            }
+        }); 
+    });
+</script>
+</html>

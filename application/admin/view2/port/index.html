@@ -1,0 +1,114 @@
+<include file="public/layout" />
+<body>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+  <div class="fixed-bar">
+    <div class="item-title">
+      <div class="subject">
+        <h3>关区管理</h3>
+        <h5>关区信息</h5>
+      </div>
+    </div>
+  </div>
+  <!-- 操作说明 -->
+  <div id="explanation" class="explanation" style="color: rgb(44, 188, 163); background-color: rgb(237, 251, 248); width: 99%; height: 100%;">
+    <div id="checkZoom" class="title"><i class="fa fa-lightbulb-o"></i>
+      <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+      <span title="收起提示" id="explanationZoom" style="display: block;"></span>
+    </div>
+    <ul>
+      <li>仓库管理注意修改后清理缓存.</li>
+    </ul>
+  </div>
+  <div class="flexigrid">
+    <div class="mDiv">
+      <div class="ftitle">
+        <h3>关区列表</h3>
+        <h5></h5>
+      </div>
+     </div>
+    <div class="hDiv">
+      <div class="hDivBox">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th class="sign" axis="col6">
+                <div style="text-align: center; width:24px;" class="">
+                    <input name="checkbox" type="checkbox" id="checkbox_a0" class="chk_3" value="0">                            
+                    <label for="checkbox_a0"></label>
+                </div>
+              </th>           
+              <th align="center" abbr="article_title" axis="co10" class="">
+                    <div style="text-align: center; width:24px;">序号</div>
+              </th> 
+              <th align="center" abbr="ac_id" axis="col4" class="">
+                    <div style="text-align: center; width: 150px;" class="">关区名称</div>
+              </th>
+              <th align="center" abbr="ac_id" axis="col4" class="">
+                    <div style="text-align: center; width: 150px;" class="">所属平台</div>
+              </th>
+              <th align="center" abbr="ac_id" axis="col4" class="">
+                  <div style="text-align: center; width: 150px;" class="">配置名称</div>
+              </th>
+              <th align="center" abbr="ac_id" axis="col4" class="">
+                    <div style="text-align: center; width: 150px;" class="">订单海关组织编码</div>
+              </th>
+              <th align="center" abbr="ac_id" axis="col4" class="">
+                <div style="text-align: center; width: 150px;" class="">订单国检组织编码</div>
+              </th>
+              <th align="center" abbr="ac_id" axis="col4" class="">
+                <div style="text-align: center; width: 200px;" class="">同步接口地址</div>
+              </th>           
+              <th align="center" abbr="article_title" axis="col6" class="">
+                <div style="text-align: center; min-width:50px !important; max-width:inherit !important;" class="">操作</div>
+              </th>              
+                <td align="" class="" style="width: 100%;">
+                  <div>&nbsp;</div>
+                </td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div> 
+    <div class="tDiv">
+      <div class="tDiv2">
+          <div class="fbutton">       
+          <a href="{:U('Admin/Port/editPort')}">
+          <div class="add" title="添加关区">
+            <span><i class="fa fa-plus"></i>添加关区</span>
+          </div>
+          </a>          
+          </div>         
+      </div>
+      <div style="clear:both"></div>
+    </div>
+    <div class="bDiv" style="height: auto;">
+     <!--ajax 返回 --> 
+      <div id="ajax_return" cellpadding="0" cellspacing="0" border="0"></div>      
+    </div>
+  </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // ajax 加载商品列表
+        ajax_get_table('search-form2', 1);
+
+    });
+
+    // ajax 抓取页面 form 为表单id  page 为当前第几页
+    function ajax_get_table(form, page) {
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type: "POST",
+            url: "/index.php?m=Admin&c=Port&a=ajaxPortList&p=" + page,//+tab,
+            data: $('#' + form).serialize(),// 你的formid
+            success: function (data) {
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+</script>
+</body>
+</html>

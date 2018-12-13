@@ -1,0 +1,148 @@
+<include file="public/layout" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/select/select2.min.css">
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/plugins/select/select2.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    $('.select2').select2({
+            language: "zh-CN"
+        });
+});
+</script>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>仓库设置</h3>
+            </div>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span> </div>
+        <ul>
+            <li>请务必正确填写仓库信息</li>
+        </ul>
+    </div>
+    <!--表单数据-->
+    <form method="post" id="addEditWareForm">
+    	<div class="ncap-form-default tab_div_1">
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">仓库名称</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$warehouseInfo.warehouse_name}" name="warehouse_name" class="input-txt"/>
+                    <span class="err" id="err_warehouse_name" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">仓库代码</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$warehouseInfo.warehouse_code}" name="warehouse_code" class="input-txt"/>
+                    <span class="err" id="err_warehouse_code" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">仓库类型</label>
+                </dt>
+                <dd class="opt">
+                    <select name="warehouse_type" id="warehouse_type" class="small form-control">
+                        <option value="0">请选择仓库类型</option>
+                        <option value="1" <if condition="$warehouseInfo['warehouse_type'] eq 1">selected='selected'</if>>保税备货</option>
+                        <option value="2" <if condition="$warehouseInfo['warehouse_type'] eq 2">selected='selected'</if>>保税直邮</option>
+                        <option value="3" <if condition="$warehouseInfo['warehouse_type'] eq 3">selected='selected'</if>>普通仓</option>
+                    </select>
+                    <span class="err" id="err_warehouse_type" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">店铺api</label>
+                </dt>
+                <dd class="opt">
+                        <select name="apiId" id="apiId" class="small form-control">
+                            <option value="0">请选择店铺</option>                                      
+                             <foreach name="apiList" item="v" key="k" >                                              
+                               <option value="{$v['id']}" <if condition="$v['id'] eq $warehouseInfo['apiId']">selected="selected"</if> >
+                                    {$v['shopName']}
+                               </option>
+                             </foreach>
+                        </select>
+                    <!-- <input type="text" value="{$warehouseInfo.warehouseCode}" name="apiId" class="input-txt"/> -->
+                    <span class="err" id="err_apiId" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <span>*</span>
+                    <label for="record_no">关区选择</label>
+                </dt>
+                <dd class="opt">
+                    <select name="customsId" id="customsId" class="select2" style="width: 290px;">
+                        <option value="0">请选择所在关区</option>
+                        <volist name="cusList" id="m" key="k">
+                            <option value="{$m['id']}" <if condition="$warehouseInfo['customsId'] eq $m['id']">selected='selected'</if>>{$m['code']}-{$m['name']}</option>
+                        </volist>
+                    </select>
+                    <span class="err" id="err_warehouse_type" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">仓库地址</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$warehouseInfo.warehouse_addr}" name="warehouse_addr" class="input-txt"/>
+                    <span class="err" id="err_warehouse_addr" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">仓库负责人</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$warehouseInfo.contactsName}" name="contactsName" class="input-txt"/>
+                    <span class="err" id="err_contactsName" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">电话</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$warehouseInfo.contactsMobile}" name="contactsMobile" class="input-txt"/>
+                    <span class="err" id="err_contactsMobile" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="record_no">仓库所属公司</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$warehouseInfo.companyName}" name="companyName" class="input-txt"/>
+                    <span class="err" id="err_companyName" style="color:#F00; display:none;"></span>
+                </dd>
+            </dl>
+
+        </div>
+        <div class="ncap-form-default">        
+            <div class="bot">            
+                <input type="hidden" name="warehouse_id" value="{$warehouseInfo.warehouse_id}">
+               <!--  <input type="hidden" name="__token__" value="{$Request.token}" /> -->
+                <a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onClick="ajax_submit_form('addEditWareForm','{:U('warehouse/addEditWarehouse?is_ajax=1')}');">确认提交</a>
+            </div>
+        </div> 
+    </form>
+</div>

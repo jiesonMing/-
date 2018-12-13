@@ -1,0 +1,73 @@
+<table>
+    <tbody>
+        <volist name="paySettingList" id="list" key="k">
+            <tr>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width:20px;">
+                        <input name="checkbox" type="checkbox" id="checkbox_a{$k+1}" class="chk_3" value="{$list.id}">
+                        <label for="checkbox_a{$k+1}"></label>
+                    </div>
+                </td>  
+                <td align="center" axis="co10">
+                    <div style="text-align: center; width:24px;">{$k}</div>
+                </td>               
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 100px;" class="id">{$list.payShopName}</div>
+                </td>               
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 50px;" class="id">{$list.code}</div>
+                </td>              
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 150px;" class="id">{$list.payCompanyName}</div>
+                </td>                
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 120px;">{$list.payCusCode}</div>
+                </td>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 150px;">{$list.payurl}</div>
+                </td>            
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 160px;">{$list.payid}</div>
+                </td>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 160px;">{$list.intelpayid}</div>
+                </td>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 70px;">{$list.payType}</div>
+                </td>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 90px;">{$list.customspaytype}</div>
+                </td>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 90px;">{$list.customsCode}</div>
+                </td>
+                <td align="center" axis="col0">
+                    <div style="text-align: center; width: 90px;">{$list.ciqCode}</div>
+                </td>
+                <td class="handle" axis="col6" >
+                    <div style="text-align:center;min-width:50px !important; max-width:inherit !important;">
+                        <span class="btn"><em><i class="fa fa-cog"></i>设置<i class="arrow"></i></em>
+                            <ul>
+                                <li><a href="{:U('Admin/Setting/editPaySetting',array('id'=>$list['id']))}">编辑配置</a></li>
+                                <li><a href="javascript:void(0);" onclick="del('{$list[id]}')">删除配置</a></li>
+                            </ul>
+                        </span>
+                    </div>
+                </td>                 
+                <td align="" class="" style="width: 100%;">
+                  <div>&nbsp;</div>
+                </td>
+              </tr>
+            </volist>             
+          </tbody>
+        </table>
+        <!--分页位置--> {$page}
+        <script type="text/javascript">
+          $(function(){
+            // 点击分页触发的事件
+            $(".pagination  a").click(function(){
+                cur_page = $(this).data('p');
+                ajax_get_table('search-form2',cur_page);
+            }); 
+          })
+        </script>

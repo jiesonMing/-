@@ -1,0 +1,200 @@
+<table class="order_table q_nowrap" border='0'cellspacing="0" cellpadding="0" id="tbody">
+    <thead>
+    <tr>
+        <td>
+            <input name="" type="checkbox" id="checkbox_a0" class="chk_3" value="0">
+            <label for="checkbox_a0"></label>
+        </td>
+        <td class="w20">序号</td>
+        <td class="w110">订单编号</td>
+        <td class="w80">仓库名称</td>
+        <td class="w80">订单人id</td>
+        <td class="w110">收件人</td>
+        <td>地址</td>
+        <td class="w60">金额</td>
+        <td class="w80">订单状态</td>
+        <td class="w80">发货状态</td>
+        <td class="w80">支付方式</td>
+        <td class="w130"><a href="javascript:oSort(6);">下单时间</a></td>
+        <td class="center w40"><a href="javascript:oSort(1);">支付</a></td>
+        <if condition="$wareId neq 2">
+            <td class="center w40"><a href="javascript:oSort(2);">海关支付单</a></td>
+            <td class="center w40"><a href="javascript:oSort(7);">国检支付单</a></td>
+            <td class="center w40"><a href="javascript:oSort(3);">海关订单</a></td>
+            <td class="center w40"><a href="javascript:oSort(4);">国检订单</a></td>
+            <td class="center w40"><a href="javascript:oSort(5);">系统</a></td>
+        </if>
+        <td class="center w60">操作</td>
+    </tr>
+    </thead>
+    <tbody>
+    <if condition="empty($orderList) eq true">
+        <tr data-id="0">
+            <td colspan="50">
+                没有符合条件的记录
+            </td>
+        </tr>
+        <else/>
+        <foreach name="orderList" key="k" item="list">
+            <tr>
+                <td>
+                    <input name="checkbox" type="checkbox" id="checkbox_a{$k+1}" class="chk_3" value="{$list.order_id}">
+                    <label for="checkbox_a{$k+1}"></label>
+                </td>
+                <td>{$k+1}</td>
+                <td>
+                    <a href="{:U('Admin/order/detail',array('order_id'=>$list['order_id']))}" title="点击查看订单详情">{$list.order_sn}</a>
+                </td>
+                <td>{$list.warehouse_name}</td>
+                <td>{$list.buyerRegNo|trim='jd_'}</td>
+                <td>{$list.consignee}:{$list.mobile}</td>
+                <td title="{$list.address}">{$list.address|mb_substr=0,20,'utf-8'}</td>
+                <td>{$list.order_amount}</td>
+                <td>
+                    <if condition="$list['is_cod'] eq '1'"><span style="color: red">(货到付款)</span>
+                        <elseif condition="$list['deleted'] eq 1"><p style="color: red;">已删除</p>
+                            <elseif condition="$list['order_status'] eq 3"><p style="color: red;">{$order_status[$list[order_status]]}</p>
+                                <elseif condition="$list['order_status'] eq 5"><p style="color: red;">{$order_status[$list[order_status]]}</p>
+                                    <else/>
+                                    {$order_status[$list[order_status]]}
+                    </if>
+                </td>
+                <td>{$shipping_status[$list[shipping_status]]}</td>
+                <td>{$list.pay_name}<if condition="!empty($list['paymentType'])">({$list.paymentType})</if></td>
+                <td>{$list.add_time|date='Y-m-d H:i:s',###}</td>
+                <td class="center">
+                    <if condition="($list[pay_status] eq 0) and ($list[order_status] eq 0) and ($list[deleted] eq 0) and ($list[userType] eq 1)">
+                        <!--i class="fa fa-refresh status_1"></i-->
+                        <a href="javascript:payBatch({$list['order_id']});">点击支付</a>
+                        <elseif condition="($list[pay_status] eq 2) and ($list[order_status] eq 0) and ($list[deleted] eq 0) and ($list[userType] eq 1)">
+                            <a href="javascript:void(0);" title="支付中：{$list['pay_time']|date='Y-m-d H:i:s',###}"><i class="fa fa-refresh status_1"></i></a>
+                            <elseif condition="($list[pay_status] eq 3) and ($list[order_status] eq 0) and ($list[deleted] eq 0)">
+                                <a href="javascript:void(0);" title="支付失败：{$list['pay_time']|date='Y-m-d H:i:s',###}"><i class="fa fa-times status_2"></i></a>
+                                <elseif condition="$list[pay_status] eq 1">
+                                    <!--i class="fa fa-times status_2"></i-->
+                                    <a href="javascript:void(0);" title="支付时间：{$list['pay_time']|date='Y-m-d H:i:s',###}"><i class="fa fa-check status_3"></i></a>
+                                    <else />
+                                    <!--i class="fa fa-ban status_0"></i-->
+                                    <i class="fa fa-ban status_0"></i>
+                    </if>
+                </td>
+                <if condition="$list[warehouse_type] eq 2">
+
+                    <td class="center">
+                        <if condition="$list[payOrderStatus] eq 1">
+                            <a href="javascript:void(0);" title="时间：{$list['payOrderTime']}"><i class="fa fa-refresh status_1"></i></a>
+                            <elseif condition="$list[payOrderStatus] eq 2">
+                                <a href="javascript:void(0);" title="时间：{$list['payOrderTime']} {$list['payOrderInfo']}"><i class="fa fa-times status_2"></i></a>
+                                <elseif condition="$list[payOrderStatus] eq 3">
+                                    <a href="javascript:void(0);" title="时间：{$list['payOrderTime']}"><i class="fa fa-check status_3"></i></a>
+                                    <elseif condition="$list[payOrderStatus] eq 4">
+                                        <a href="javascript:void(0);" title="时间：{$list['payOrderTime']}"><i class="fa fa-check status_2"></i></a>
+                                        <else />
+                                        <i class="fa fa-ban status_0"></i>
+                        </if>
+                    </td>
+                    <td class="center">
+                        <if condition="$list[payCiqOrderStatus] eq 1">
+                            <a href="javascript:void(0);" title="时间：{$list['payCiqOrderTime']}"><i class="fa fa-refresh status_1"></i></a>
+                            <elseif condition="$list[payCiqOrderStatus] eq 2">
+                                <a href="javascript:void(0);" title="时间：{$list['payCiqOrderTime']} {$list['payCiqOrderInfo']}"><i class="fa fa-times status_2"></i></a>
+                                <elseif condition="$list[payCiqOrderStatus] eq 3">
+                                    <a href="javascript:void(0);" title="时间：{$list['payCiqOrderTime']}"><i class="fa fa-check status_3"></i></a>
+                                    <elseif condition="$list[payCiqOrderStatus] eq 4">
+                                        <a href="javascript:void(0);" title="时间：{$list['payCiqOrderTime']}"><i class="fa fa-check status_2"></i></a>
+                                        <else />
+                                        <i class="fa fa-ban status_0"></i>
+                        </if>
+                    </td>
+                    <td class="center">
+                        <if condition="$list[cusOrderStatus] eq 1">
+                            <a href="javascript:void(0);" title="时间：{$list['cusOrderSendTime']}"><i class="fa fa-refresh status_1"></i></a>
+                            <elseif condition="$list[cusOrderStatus] eq 2">
+                                <a href="javascript:void(0);" title="时间：{$list['cusOrderSendTime']} {$list['cusOrderInfo']}"><i class="fa fa-times status_2"></i></a>
+                                <elseif condition="$list[cusOrderStatus] eq 3">
+                                    <a href="javascript:void(0);" title="时间：{$list['cusOrderSendTime']}"><i class="fa fa-check status_3"></i></a>
+                                    <elseif condition="$list[cusOrderStatus] eq 4">
+                                        <a href="javascript:void(0);" title="时间：{$list['cusOrderSendTime']}"><i class="fa fa-check status_2"></i></a>.
+                                        <elseif condition="$list[cusOrderStatus] eq 5">
+                                            <a href="javascript:void(0);" title="时间：{$list['cusOrderSendTime']}"><i class="fa fa-arrow-right status_0"></i></a>
+                                            <else />
+                                            <i class="fa fa-ban status_0"></i>
+                        </if>
+                    </td>
+                    <td class="center">
+                        <if condition="$list[ciqOrderStatus] eq 1">
+                            <a href="javascript:void(0);" title="时间：{$list['ciqOrderSendTime']}"><i class="fa fa-refresh status_1"></i></a>
+                            <elseif condition="$list[ciqOrderStatus] eq 2">
+                                <a href="javascript:void(0);" title="时间：{$list['ciqOrderSendTime']} {$list['ciqOrderInfo']}"><i class="fa fa-times status_2"></i></a>
+                                <elseif condition="$list[ciqOrderStatus] eq 3">
+                                    <a href="javascript:void(0);" title="时间：{$list['ciqOrderSendTime']}"><i class="fa fa-check status_3"></i></a>
+                                    <elseif condition="$list[ciqOrderStatus] eq 4">
+                                        <a href="javascript:void(0);" title="时间：{$list['ciqOrderSendTime']}"><i class="fa fa-check status_2"></i></a>
+                                        <elseif condition="$list[ciqOrderStatus] eq 5">
+                                            <a href="javascript:void(0);" title="时间：{$list['ciqOrderSendTime']}"><i class="fa fa-arrow-right status_0"></i></a>
+                                            <else />
+                                            <i class="fa fa-ban status_0"></i>
+                        </if>
+                    </td>
+                    <td class="center">
+                        <if condition="$list[isSync] eq 1">
+                            <a href="javascript:void(0);" title="同步完成"><i class="fa fa-check status_3"></i></a>
+                            <elseif condition="$list[isSync] eq 2">
+                                <a href="javascript:void(0);" title="同步失败-原因:{$list['syncInfo']}"><i class="fa fa-times status_2"></i></a>
+                                <elseif condition="$list[isSync] eq 3">
+                                    <a href="javascript:void(0);" title="同步完成，但异常-原因:{$list['syncInfo']}"><i class="fa fa-check status_2"></i></a>
+                                    <else />
+                                    <i class="fa fa-ban status_0"></i>
+                        </if>
+                    </td>
+                </if>
+                <td class="deleted">
+                    <if condition="($list['order_status'] eq 3) or ($list['order_status'] eq 5)">
+                        <a class="red" href="javascript:void(0);" onclick="del({$list['order_id']})"><i class="fa fa-trash-o"></i>删除</a>
+                        <elseif condition="$list['deleted'] eq 1">
+                            <a class="no_del" href="javascript:void(0);" title="该状态下订单不可删除"><i class="fa fa-trash-o"></i>删除</a>
+                            <else />
+                            <a class="no_del" href="javascript:void(0);" title="该状态下订单不可删除"><i class="fa fa-trash-o"></i>删除</a>
+                    </if>
+                </td>
+            </tr>
+        </foreach>
+    </if>
+    </tbody>
+</table>
+<script type="text/javascript">
+    function getCount(){
+        $('.ftitle>h5').html("(共{$count}条记录)");
+    }
+    getCount();
+</script>
+<!--分页位置--> {$page}
+<script>
+    $(".pagination  a").click(function(){
+        var page = $(this).data('p');
+        var status="{$status}";
+        var type="{$type}";
+        ajax_get_table('search-form2',page,type,status);
+    });
+
+    $("#checkbox_a0").click(function(){
+        if($(this).is(':checked')){
+            $("input:checkbox").each(function(){
+                this.checked = true;
+            });
+        }else{
+            $("input:checkbox").each(function(){
+                this.checked = false;
+            });
+        }
+    });
+
+    // 删除操作
+    function del(orderId) {
+        layer.confirm('确定要删除该订单吗？', {icon: 3, title:'提示'}, function(i){
+            var url="/index.php/Admin/order/delete_order/order_id/"+orderId;
+            location.href = url;
+        });
+    }
+
+</script>

@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style>
+            .info{
+                width:50%;
+                margin:100px auto;
+            }
+        </style>
+    </head>
+    <empty name="data">
+        <body>
+            <div class="pay">
+                <h4 class="info">{$info}</h4>
+            </div>
+        </body>
+    <else />
+        <body onLoad="document.dinpayForm.submit();">
+            <h4 class="info">正在拉起支付...</h4>
+            <form name="dinpayForm" id="dinpayForm" method="POST" action="{$url}">
+                    <foreach name="data" item="vo" key="k">
+                        <input type="hidden" name="{$k}" value="{$vo}"/>
+                    </foreach>
+            </form>
+        </body>
+    </empty>
+</html>
